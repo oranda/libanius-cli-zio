@@ -1,0 +1,17 @@
+# Java class files
+*.class
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Files generated at runtime
+/project/target/
+/target/
+/project/project/
+
+# IntelliJ
+/.idea/
+*.iml
+
+# Shell scripts
+*.sh

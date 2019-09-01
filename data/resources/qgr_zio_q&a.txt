@@ -1,0 +1,27 @@
+#quizGroup type="QuestionAndAnswer" promptType="ZIO Question" responseType="Answer" useMultipleChoiceUntil="4" isActive="true" currentPromptNumber="0"
+#quizGroupPartition numCorrectResponsesInARow="0"
+What is the type parameter for the Environment Type?|R
+What is the type parameter for the Failure Type?|E
+What is the type parameter for the Success Type?|A
+What is the type alias for an effect that has no requirements and may fail with an E, or succeed with an A?|IO
+What is the type alias for an effect that has no requirements, and cannot fail, but can succeed with an A?|UIO
+What method in ZIO would you use to convert a Scala Option into a ZIO effect?|fromOption
+What method in ZIO would you use to convert an Either into a ZIO effect?|fromEither
+What method in ZIO would you use to convert a function A => B into a ZIO effect?|fromFunction
+What method in ZIO would you use to convert a synchronous side-effect (such as StdIn.readLine()) into a ZIO effect?|effect
+What method in ZIO would you use to refine the error type of an effect (by treating other errors as fatal)?|refineToOrDie
+What method would you use to convert a blocking side-effect (such as Thread.sleep(10)) into a ZIO effect?|effectBlocking
+What method would you use to transform the failure value of an effect to an Exception?|mapError
+What method would you use to chain two effects in sequence?|flatMap
+What method in ZIO would you use to combine two effects into a single effect that contains the success value of both effects?|zip
+What is the symbolic alias for zipRight?|*>
+What method in ZIO would you use to convert a ZIO[R, E, A] to a ZIO[R, Nothing, Either[E, A]]  (surfacing a failure)?|either
+What method in ZIO would you use to convert a ZIO[R, Nothing, Either[E, A]] to a ZIO[R, E, A] (submerging a failure)?|absolve
+What method would you use to catch and recover from all types of error, e.g. in openFile("primary.json").--------(_ => openFile("backup.json")) (fill in the blank)?|catchAll
+What method would you use to try another method if one fails (fallback), e.g. in openFile("primary.json").--------(_ => openFile("backup.json")) (fill in the blank)?|orElse
+What method in ZIO takes a Schedule for retrying effects?|retry
+What method in ZIO provides similar functionality to try / finally?|ensuring
+What method in ZIO is used to safely acquire and release resources?|bracket
+What is ZIO's main concurrency concept, a lightweight "green thread"?|fiber
+What type parameter does a Fiber not have that a ZIO effect does?|R
+What method on a Fiber returns an effect containing an Exit value, which provides full information on how the fiber completed?|await

@@ -14,7 +14,7 @@ Usage
 =====
 
 You need to have Scala installed. This project should work with most recent 2.x versions. It has been 
-tested with Scala 2.13.1, Java 8, and sbt 1.3.8.
+tested with Scala 2.12.6, Java 8, and sbt 1.3.8.
 
 To install, either download the zip file for this project or clone it with git:
 

@@ -11,3 +11,7 @@ libraryDependencies ++= Seq(
 
 dependencyOverrides += "com.lihaoyi" %% "fastparse" % "1.0.0"
 
+scalacOptions ++= Seq("-Ywarn-unused", "-Yrangepos")
+
+addCompilerPlugin(scalafixSemanticdb)
+

@@ -2,7 +2,7 @@ organization := "com.github.oranda"
 name := "libanius-cli-zio"
 version := "0.1.1"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.12"
 
 libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.3.4",

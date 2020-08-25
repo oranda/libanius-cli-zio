@@ -18,10 +18,11 @@ package com.github.oranda.libanius.cli
 
 import com.oranda.libanius.consoleui.ChoiceGroupStrings
 import com.oranda.libanius.model.Quiz
-import com.oranda.libanius.model.quizgroup.{QuizGroupHeader, WordMapping}
+import com.oranda.libanius.model.quizgroup.QuizGroupHeader
 import com.oranda.libanius.model.action.modelComponentsAsQuizItemSources._
 import com.oranda.libanius.model.action.NoParams
 import com.oranda.libanius.model.action.QuizItemSource.{findAnyUnfinishedQuizItem, produceQuizItem}
+import com.oranda.libanius.model.quizgroup.QuizGroupType.WordMapping
 import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
 
 /**
@@ -30,10 +31,6 @@ import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
  * Some of these functions may eventually be migrated to Libanius core.
  */
 object LibaniusUtil {
-
-  def isCorrect(userResponse: String, quizItem: QuizItemViewWithChoices, quiz: Quiz) =
-    quiz.isCorrect(quizItem.quizGroupHeader, quizItem.prompt.value, userResponse)
-
   def findQuizItem(quiz: Quiz): Option[QuizItemViewWithChoices] =
     produceQuizItem(quiz, NoParams()).orElse(findAnyUnfinishedQuizItem(quiz, NoParams()))
 

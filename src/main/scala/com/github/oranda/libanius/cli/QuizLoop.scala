@@ -22,7 +22,7 @@ import zio.{IO, URIO, ZIO}
 import zio.console.{Console, getStrLn, putStrLn}
 
 import com.oranda.libanius.consoleui.{Quit, TextAnswer, UserConsoleResponse}
-import com.oranda.libanius.model.Quiz
+import com.oranda.libanius.model.{Correct, Quiz}
 import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
 import com.oranda.libanius.util.StringUtil
 
@@ -100,7 +100,7 @@ object QuizLoop {
     answer: String,
     quizItem: QuizItemViewWithChoices
   ): URIO[Console, Quiz] = {
-    val isCorrect = quiz.isCorrect(quizItem.quizGroupHeader, quizItem.prompt.value, answer)
+    val isCorrect = quiz.isCorrect(quizItem.quizGroupKey, quizItem.prompt.value, answer) == Correct
     val message = if (isCorrect) "Correct!\n"
                   else s"Wrong! It's ${quizItem.correctResponse} not $answer"
     putStrLn(s"\n$message\n") *> IO.succeed(quiz.updateWithUserResponse(

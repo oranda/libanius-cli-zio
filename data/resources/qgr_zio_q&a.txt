@@ -1,4 +1,4 @@
-#quizGroup type="QuestionAndAnswer" promptType="ZIO Question" responseType="Answer" useMultipleChoiceUntil="4" isActive="true" currentPromptNumber="0"
+#quizGroup promptType="ZIO Question" responseType="Answer" type="QuestionAndAnswer" useMultipleChoiceUntil="4" isActive="true" currentPromptNumber="0"
 #quizGroupPartition numCorrectResponsesInARow="0"
 What is the type parameter for the Environment Type?|R
 What is the type parameter for the Failure Type?|E

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 James McCabe
+ * Copyright 2019-2020 James McCabe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ object QuizInit {
     val chooseQgsText =
       "\nChoose quiz group(s). For more than one, separate with commas, e.g. 1,2,3\n\n"
     for {
-      _ <- putStrLn(chooseQgsText + LibaniusUtil.makeQgChoicesText(qgHeaders) + "\n")
+      _ <- putStrLn(chooseQgsText + Text.quizGroupChoices(qgHeaders) + "\n")
       choices <- getSelectionFromInput(qgHeaders)
     } yield choices
   }

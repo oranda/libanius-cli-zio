@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 James McCabe
+ * Copyright 2019-2020 James McCabe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ object QuizCli extends App with AppDependencyAccess {
   val quizCli: ZIO[Console, IOException, Quiz] = for {
       qgHeaders <- availableQgHeaders
       quiz <- if (qgHeaders.isEmpty) QuizInit.loadDemoQuiz else QuizInit.loadQuiz(qgHeaders)
-      quizUpdated <- putStrLn(LibaniusUtil.quizIntroText(quiz)) *> QuizLoop.loop(quiz)
+      quizUpdated <- putStrLn(Text.quizIntro(quiz)) *> QuizLoop.loop(quiz)
     } yield quizUpdated
 
   def availableQgHeaders: IO[IOException, Seq[QuizGroupHeader]] = {

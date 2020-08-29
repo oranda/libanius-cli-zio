@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 James McCabe
+ * Copyright 2019-2020 James McCabe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,17 @@ import java.io.IOException
 
 import zio.{IO, URIO, ZIO}
 import zio.console.{Console, getStrLn, putStrLn}
-
 import com.oranda.libanius.consoleui.{Quit, TextAnswer, UserConsoleResponse}
+import com.oranda.libanius.dependencies.AppDependencyAccess
 import com.oranda.libanius.model.{Correct, Quiz}
 import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
 import com.oranda.libanius.util.StringUtil
+import com.oranda.libanius.model.action.FindQuizItem
 
-object QuizLoop {
+object QuizLoop extends AppDependencyAccess {
   def loop(quiz: Quiz): ZIO[Console, IOException, Quiz] = for {
     _ <- showQuizStatus(quiz)
-    quiz <- LibaniusUtil.findQuizItem(quiz) match {
+    quiz <- FindQuizItem.run(quiz) match {
       case None => putStrLn(s"No more questions found! Done!") *> IO.succeed(quiz)
       case Some(quizItem) => runQuizItemAndLoop(quiz, quizItem)
     }
@@ -48,12 +49,12 @@ object QuizLoop {
   } yield newState
 
   def exit(quiz: Quiz): ZIO[Console, IOException, Quiz] =
-    putStrLn("Exiting...") *> IO.effect(LibaniusUtil.saveQuiz(quiz)).refineToOrDie[IOException]
+    putStrLn("Exiting...") *> IO.effect(dataStore.saveQuiz(quiz)).refineToOrDie[IOException]
 
   def askQuestionAndGetResponse(
     quizItem: QuizItemViewWithChoices
   ): ZIO[Console, IOException, UserConsoleResponse] = for {
-    input <- putStrLn(s"${LibaniusUtil.makeQuestionText(quizItem)}") *> getStrLn
+    input <- putStrLn(s"${Text.question(quizItem)}") *> getStrLn
     userResponse <- input.trim match {
       case "" => askQuestionAndGetResponse(quizItem)
       case "q" | "quit" => IO.succeed(Quit)

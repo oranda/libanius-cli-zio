@@ -1,6 +1,6 @@
 organization := "com.github.oranda"
 name := "libanius-cli-zio"
-version := "0.1.1"
+version := "0.2"
 
 scalaVersion := "2.12.12"
 

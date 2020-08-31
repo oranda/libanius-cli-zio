@@ -56,4 +56,12 @@ object Text {
     val fullQuestionText = questionText + wordTextToShow + answeredTextToShow + extraText
     fullQuestionText
   }
+
+  def completed: String = s"""
+    |No more questions found! Congratulations on completing the quiz!
+    |
+    |If you felt Libanius helped you learn this subject, and want to learn
+    |something else, consider making your own quiz file. It's easy! See the
+    |README for details.
+    |""".stripMargin
 }

@@ -31,7 +31,7 @@ object QuizLoop extends AppDependencyAccess {
   def loop(quiz: Quiz): ZIO[Console, IOException, Quiz] = for {
     _ <- showQuizStatus(quiz)
     quiz <- FindQuizItem.run(quiz) match {
-      case None => putStrLn(s"No more questions found! Done!") *> IO.succeed(quiz)
+      case None => putStrLn(Text.completed) *> IO.succeed(quiz)
       case Some(quizItem) => runQuizItemAndLoop(quiz, quizItem)
     }
   } yield quiz

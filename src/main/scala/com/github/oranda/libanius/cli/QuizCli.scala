@@ -18,7 +18,7 @@ package com.github.oranda.libanius.cli
 
 import java.io.IOException
 
-import zio.{App, IO, URIO, ZIO}
+import zio.{App, IO, ZIO}
 import zio.console.{Console, putStrLn}
 
 import com.oranda.libanius.model.quizgroup.QuizGroupHeader
@@ -27,8 +27,8 @@ import com.oranda.libanius.model.Quiz
 
 object QuizCli extends App with AppDependencyAccess {
 
-  def run(args: List[String]): URIO[Console, Int] =
-    quizCli.fold(_ => 1, _ => 0)
+  def run(args: List[String]) =
+    quizCli.exitCode
 
   val quizCli: ZIO[Console, IOException, Quiz] = for {
       qgHeaders <- availableQgHeaders

@@ -6,7 +6,8 @@ scalaVersion := "2.12.12"
 
 libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.3.4",
-  "dev.zio" %% "zio" % "1.0.0"
+  "dev.zio" %% "zio" % "1.0.0",
+  "com.github.oranda" %% "libanius" % "0.9.8.7.2"
 )
 
 dependencyOverrides += "com.lihaoyi" %% "fastparse" % "1.0.0"

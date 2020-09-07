@@ -25,12 +25,12 @@ import com.oranda.libanius.model.quizgroup.QuizGroupHeader
 import com.oranda.libanius.dependencies.AppDependencyAccess
 import com.oranda.libanius.model.Quiz
 
-object QuizCli extends App with AppDependencyAccess {
+object QuizCLI extends App with AppDependencyAccess {
 
   def run(args: List[String]) =
-    quizCli.exitCode
+    quizCLI.exitCode
 
-  val quizCli: ZIO[Console, IOException, Quiz] = for {
+  val quizCLI: ZIO[Console, IOException, Quiz] = for {
       qgHeaders <- availableQgHeaders
       quiz <- if (qgHeaders.isEmpty) QuizInit.loadDemoQuiz else QuizInit.loadQuiz(qgHeaders)
       quizUpdated <- putStrLn(Text.quizIntro(quiz)) *> QuizLoop.loop(quiz)

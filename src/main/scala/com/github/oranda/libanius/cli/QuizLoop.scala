@@ -20,18 +20,21 @@ import java.io.IOException
 
 import zio.{IO, URIO, ZIO}
 import zio.console.{Console, getStrLn, putStrLn}
-import com.oranda.libanius.consoleui.{Quit, TextAnswer, UserConsoleResponse}
 import com.oranda.libanius.dependencies.AppDependencyAccess
 import com.oranda.libanius.model.{Correct, Quiz}
 import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
 import com.oranda.libanius.util.StringUtil
 import com.oranda.libanius.model.action.FindQuizItem
 
+sealed trait UserConsoleResponse
+case class UserTextAnswer(text: String) extends UserConsoleResponse
+case object Quit extends UserConsoleResponse
+
 object QuizLoop extends AppDependencyAccess {
   def loop(quiz: Quiz): ZIO[Console, IOException, Quiz] = for {
     _ <- showQuizStatus(quiz)
     quiz <- FindQuizItem.run(quiz) match {
-      case None => putStrLn(Text.completed) *> IO.succeed(quiz)
+      case None => putStrLn(Text.quizCompleted) *> IO.succeed(quiz)
       case Some(quizItem) => runQuizItemAndLoop(quiz, quizItem)
     }
   } yield quiz
@@ -43,8 +46,7 @@ object QuizLoop extends AppDependencyAccess {
     response <- askQuestionAndGetResponse(quizItem)
     newState <- response match {
       case Quit => exit(quiz)
-      case TextAnswer(answer) => processQuizItemAndLoop(quiz, answer, quizItem)
-      case _ => putStrLn("Invalid response") *> runQuizItemAndLoop(quiz, quizItem)
+      case UserTextAnswer(answer) => processQuizItemAndLoop(quiz, answer, quizItem)
     }
   } yield newState
 
@@ -56,9 +58,9 @@ object QuizLoop extends AppDependencyAccess {
   ): ZIO[Console, IOException, UserConsoleResponse] = for {
     input <- putStrLn(s"${Text.question(quizItem)}") *> getStrLn
     userResponse <- input.trim match {
-      case "" => askQuestionAndGetResponse(quizItem)
+      case "" =>           askQuestionAndGetResponse(quizItem)
       case "q" | "quit" => IO.succeed(Quit)
-      case answer => IO.succeed(TextAnswer(answer))
+      case answer =>       IO.succeed(UserTextAnswer(answer))
     }
   } yield userResponse
 

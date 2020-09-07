@@ -43,22 +43,22 @@ object QuizInit {
       "\nChoose quiz group(s). For more than one, separate with commas, e.g. 1,2,3\n\n"
     for {
       _ <- putStrLn(chooseQgsText + Text.quizGroupChoices(qgHeaders) + "\n")
-      choices <- getSelectionFromInput(qgHeaders)
+      choices <- getQgSelectionFromInput(qgHeaders)
     } yield choices
   }
 
-  def getSelectionFromInput(
-    qgHeaders: Seq[QuizGroupHeader]
+  def getQgSelectionFromInput(
+    availableQgHeaders: Seq[QuizGroupHeader]
   ): ZIO[Console, IOException, Seq[QuizGroupHeader]] = for {
     userInput <- getStrLn
-    validChoices = (1 to qgHeaders.size).map(_.toString)
+    validChoices = (1 to availableQgHeaders.size).map(_.toString)
     userChoices = userInput.split(",")
     userChoicesAreValid = userChoices.toSet.subsetOf(validChoices.toSet)
     chosenOptions <-
       if (userChoicesAreValid)
-        IO.succeed(userChoices.map(_.toInt - 1).map(qgHeaders).toSeq)
+        IO.succeed(userChoices.map(_.toInt - 1).map(availableQgHeaders).toSeq)
       else
-        putStrLn("\nUnrecognized option") *> getQuizGroupsFromUser(qgHeaders)
+        putStrLn("\nUnrecognized option") *> getQuizGroupsFromUser(availableQgHeaders)
   } yield chosenOptions
 
   def quizForQgHeaders(qgHeaders: Seq[QuizGroupHeader]): IO[IOException, Quiz] = {

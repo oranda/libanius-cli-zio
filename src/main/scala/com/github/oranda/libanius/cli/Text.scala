@@ -25,18 +25,18 @@ import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
  * Functions to compose text.
  */
 object Text {
+  def quizIntro(quiz: Quiz) = s"""
+    |Selected quiz groups:
+    |${quiz.activeQuizGroupHeaders.mkString("\n")}
+    |
+    |Number of quiz items: ${quiz.numQuizItems}
+    |
+    |OK, the quiz begins! To quit, type q at any time.|""".stripMargin
+
   def quizGroupChoices(choices: Seq[QuizGroupHeader]): String =
     choices.zipWithIndex.map { case (header, index) =>
       (index + 1) + ". " + header
     }.mkString("\n")
-
-  def quizIntro(quiz: Quiz) = s"""
-      |Selected quiz groups:
-      |${quiz.activeQuizGroupHeaders.mkString("\n")}
-      |
-      |Number of quiz items: ${quiz.numQuizItems}
-      |
-      |OK, the quiz begins! To quit, type q at any time.|""".stripMargin
 
   def question(quizItem: QuizItemViewWithChoices): String = {
     val wordText = s": what is the ${quizItem.responseType} for this ${quizItem.promptType}?"
@@ -57,7 +57,7 @@ object Text {
     fullQuestionText
   }
 
-  def completed: String = s"""
+  def quizCompleted: String = s"""
     |No more questions found! Congratulations on completing the quiz!
     |
     |If you felt Libanius helped you learn this subject, and want to learn

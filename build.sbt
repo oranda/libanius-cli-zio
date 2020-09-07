@@ -4,11 +4,17 @@ version := "0.2.1"
 
 scalaVersion := "2.12.12"
 
+val ZIOVersion = "1.0.0"
+
 libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.3.4",
-  "dev.zio" %% "zio" % "1.0.0",
-  "com.github.oranda" %% "libanius" % "0.9.8.7.2"
+  "dev.zio" %% "zio" % ZIOVersion,
+  "com.github.oranda" %% "libanius" % "0.9.8.7.2",
+  "dev.zio" %% "zio-test" % ZIOVersion % "test",
+  "dev.zio" %% "zio-test-sbt" % ZIOVersion % "test"
 )
+
+testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework"))
 
 dependencyOverrides += "com.lihaoyi" %% "fastparse" % "1.0.0"
 

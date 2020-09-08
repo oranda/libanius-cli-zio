@@ -31,47 +31,55 @@ case class UserTextAnswer(text: String) extends UserConsoleResponse
 case object Quit extends UserConsoleResponse
 
 object QuizLoop extends AppDependencyAccess {
-  def loop(quiz: Quiz): ZIO[Console, IOException, Quiz] = for {
-    _ <- showQuizStatus(quiz)
-    quiz <- FindQuizItem.run(quiz) match {
-      case None => putStrLn(Text.quizCompleted) *> IO.succeed(quiz)
-      case Some(quizItem) => runQuizItemAndLoop(quiz, quizItem)
-    }
-  } yield quiz
+  def loop(quiz: Quiz): ZIO[Console, IOException, Quiz] = {
+    for {
+      _ <- showQuizStatus(quiz)
+      quiz <- FindQuizItem.run(quiz) match {
+        case None => putStrLn(Text.quizCompleted) *> IO.succeed(quiz)
+        case Some(quizItem) => runQuizItemAndLoop(quiz, quizItem)
+      }
+    } yield quiz
+  }
 
   def runQuizItemAndLoop(
     quiz: Quiz,
     quizItem: QuizItemViewWithChoices
-  ): ZIO[Console, IOException, Quiz] = for {
-    response <- askQuestionAndGetResponse(quizItem)
-    newState <- response match {
-      case Quit => exit(quiz)
-      case UserTextAnswer(answer) => processQuizItemAndLoop(quiz, answer, quizItem)
-    }
-  } yield newState
+  ): ZIO[Console, IOException, Quiz] = {
+    for {
+      response <- askQuestionAndGetResponse(quizItem)
+      newState <- response match {
+        case Quit => exit(quiz)
+        case UserTextAnswer(answer) => processQuizItemAndLoop(quiz, answer, quizItem)
+      }
+    } yield newState
+  }
 
   def exit(quiz: Quiz): ZIO[Console, IOException, Quiz] =
     putStrLn("Exiting...") *> IO.effect(dataStore.saveQuiz(quiz)).refineToOrDie[IOException]
 
   def askQuestionAndGetResponse(
     quizItem: QuizItemViewWithChoices
-  ): ZIO[Console, IOException, UserConsoleResponse] = for {
-    input <- putStrLn(s"${Text.question(quizItem)}") *> getStrLn
-    userResponse <- input.trim match {
-      case "" =>           askQuestionAndGetResponse(quizItem)
-      case "q" | "quit" => IO.succeed(Quit)
-      case answer =>       IO.succeed(UserTextAnswer(answer))
-    }
-  } yield userResponse
+  ): ZIO[Console, IOException, UserConsoleResponse] = {
+    for {
+      input <- putStrLn(s"${Text.question(quizItem)}") *> getStrLn
+      userResponse <- input.trim match {
+        case "" =>           askQuestionAndGetResponse(quizItem)
+        case "q" | "quit" => IO.succeed(Quit)
+        case answer =>       IO.succeed(UserTextAnswer(answer))
+      }
+    } yield userResponse
+  }
 
   def processQuizItemAndLoop(
     quiz: Quiz,
     answer: String,
     quizItem: QuizItemViewWithChoices
-  ): ZIO[Console, IOException, Quiz] = for {
-    updatedQuiz <- processQuizItem(quiz, answer, quizItem)
-    quiz <- loop(updatedQuiz)
-  } yield quiz
+  ): ZIO[Console, IOException, Quiz] = {
+    for {
+      updatedQuiz <- processQuizItem(quiz, answer, quizItem)
+      quiz <- loop(updatedQuiz)
+    } yield quiz
+  }
 
   def processQuizItem(
     quiz: Quiz,
@@ -104,8 +112,8 @@ object QuizLoop extends AppDependencyAccess {
     quizItem: QuizItemViewWithChoices
   ): URIO[Console, Quiz] = {
     val isCorrect = quiz.isCorrect(quizItem.quizGroupKey, quizItem.prompt.value, answer) == Correct
-    val message = if (isCorrect) "Correct!\n"
-                  else s"Wrong! It's ${quizItem.correctResponse} not $answer"
+    lazy val wrongMsg = s"Wrong! It's ${quizItem.correctResponse} not $answer"
+    val message = if (isCorrect) "Correct!\n" else wrongMsg
     putStrLn(s"\n$message\n") *> IO.succeed(quiz.updateWithUserResponse(
       isCorrect,
       quizItem.quizGroupHeader,

@@ -31,10 +31,12 @@ object QuizInit {
   val loadDemoQuiz: URIO[Console, Quiz] =
     putStrLn("No quiz groups found. Defaulting to dummy data.") *> IO.succeed(Quiz.demoQuiz())
 
-  def loadQuiz(availableQgHeaders: Seq[QuizGroupHeader]): ZIO[Console, IOException, Quiz] = for {
-    qgHeaders <- getQuizGroupsFromUser(availableQgHeaders)
-    quiz <- quizForQgHeaders(qgHeaders)
-  } yield quiz
+  def loadQuiz(availableQgHeaders: Seq[QuizGroupHeader]): ZIO[Console, IOException, Quiz] = {
+    for {
+      qgHeaders <- getQuizGroupsFromUser(availableQgHeaders)
+      quiz <- quizForQgHeaders(qgHeaders)
+    } yield quiz
+  }
 
   def getQuizGroupsFromUser(
     qgHeaders: Seq[QuizGroupHeader]
@@ -49,17 +51,19 @@ object QuizInit {
 
   def getQgSelectionFromInput(
     availableQgHeaders: Seq[QuizGroupHeader]
-  ): ZIO[Console, IOException, Seq[QuizGroupHeader]] = for {
-    userInput <- getStrLn
-    validChoices = (1 to availableQgHeaders.size).map(_.toString)
-    userChoices = userInput.split(",")
-    userChoicesAreValid = userChoices.toSet.subsetOf(validChoices.toSet)
-    chosenOptions <-
-      if (userChoicesAreValid)
-        IO.succeed(userChoices.map(_.toInt - 1).map(availableQgHeaders).toSeq)
-      else
-        putStrLn("\nUnrecognized option") *> getQuizGroupsFromUser(availableQgHeaders)
-  } yield chosenOptions
+  ): ZIO[Console, IOException, Seq[QuizGroupHeader]] = {
+    for {
+      userInput <- getStrLn
+      validChoices = (1 to availableQgHeaders.size).map(_.toString)
+      userChoices = userInput.split(",")
+      userChoicesAreValid = userChoices.toSet.subsetOf(validChoices.toSet)
+      chosenOptions <-
+        if (userChoicesAreValid)
+          IO.succeed(userChoices.map(_.toInt - 1).map(availableQgHeaders).toSeq)
+        else
+          putStrLn("\nUnrecognized option") *> getQuizGroupsFromUser(availableQgHeaders)
+    } yield chosenOptions
+  }
 
   def quizForQgHeaders(qgHeaders: Seq[QuizGroupHeader]): IO[IOException, Quiz] = {
     val quizGroups: Map[QuizGroupHeader, QuizGroup] =

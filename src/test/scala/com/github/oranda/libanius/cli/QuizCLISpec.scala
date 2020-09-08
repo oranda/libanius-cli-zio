@@ -5,7 +5,6 @@ import zio.test.environment.TestConsole
 import zio.test.{DefaultRunnableSpec, assert, suite, testM}
 
 object QuizCLISpec extends DefaultRunnableSpec {
-
   def spec = suite("Quiz CLI")(
     testM("Available quiz group headers can be found for a quiz") {
       val sampleQGKey = TestData.qgk0
@@ -13,7 +12,6 @@ object QuizCLISpec extends DefaultRunnableSpec {
         qgHeaders <- QuizCLI.availableQgHeaders
       } yield assert(qgHeaders.map(_.quizGroupKey))(contains(sampleQGKey))
     },
-
     testM("The quiz CLI can be run") {
       for {
         _            <- TestConsole.feedLines("1", "1", "q")

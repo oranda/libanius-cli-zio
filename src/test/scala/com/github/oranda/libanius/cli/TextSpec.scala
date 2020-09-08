@@ -20,9 +20,8 @@ object TextSpec extends DefaultRunnableSpec {
 
     test("Text can be formed for the quiz group choices") {
       val expectedText = s"""1. WordMapping: English word-German word
-        |2. WordMapping: German word-English word
-        |3. WordMapping: English word-Spanish word""".stripMargin
-
+                            |2. WordMapping: German word-English word
+                            |3. WordMapping: English word-Spanish word""".stripMargin
       val text = Text.quizGroupChoices(choices = TestData.qghs)
       assert(text)(equalTo(expectedText))
     },

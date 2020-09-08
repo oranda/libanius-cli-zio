@@ -30,11 +30,13 @@ object QuizCLI extends App with AppDependencyAccess {
   def run(args: List[String]) =
     quizCLI.exitCode
 
-  val quizCLI: ZIO[Console, IOException, Quiz] = for {
+  val quizCLI: ZIO[Console, IOException, Quiz] = {
+      for {
       qgHeaders <- availableQgHeaders
       quiz <- if (qgHeaders.isEmpty) QuizInit.loadDemoQuiz else QuizInit.loadQuiz(qgHeaders)
       quizUpdated <- putStrLn(Text.quizIntro(quiz)) *> QuizLoop.loop(quiz)
     } yield quizUpdated
+  }
 
   def availableQgHeaders: IO[IOException, Seq[QuizGroupHeader]] = {
     IO.effect(dataStore.findAvailableQuizGroups.toSeq).refineToOrDie[IOException]

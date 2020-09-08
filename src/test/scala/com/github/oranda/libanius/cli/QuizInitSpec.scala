@@ -11,7 +11,6 @@ object QuizInitSpec extends DefaultRunnableSpec {
         quiz      <- QuizInit.quizForQgHeaders(TestData.qghs)
       } yield assert(quiz.activeQuizGroupHeaders)(equalTo(TestData.qghs.toSet))
     },
-
     testM("Quiz groups can be selected from a list") {
       val expectedQgHeaders = TestData.qghs.slice(1,3)
       for {
@@ -19,7 +18,6 @@ object QuizInitSpec extends DefaultRunnableSpec {
         qghs <- QuizInit.getQgSelectionFromInput(TestData.qghs)
       } yield assert(qghs)(equalTo(expectedQgHeaders))
     },
-
     testM("If the user inputs an invalid selection for a quiz group, an error message is output") {
       for {
         _        <- TestConsole.feedLines("0", "1")
@@ -28,7 +26,6 @@ object QuizInitSpec extends DefaultRunnableSpec {
         errorMsg = output(0).trim
       } yield assert(errorMsg)(startsWithString("Unrecognized option"))
     },
-
     testM("The user can be prompted to select quiz groups from a list") {
       val expectedQgHeaders = TestData.qghs.slice(1,3)
       for {
@@ -36,7 +33,6 @@ object QuizInitSpec extends DefaultRunnableSpec {
         qghs <- QuizInit.getQuizGroupsFromUser(TestData.qghs)
       } yield assert(qghs)(equalTo(expectedQgHeaders))
     },
-
     testM("The user can be prompted for quiz groups, and a quiz can be loaded from them") {
       val expectedQgHeaders = TestData.qghs.slice(1,3)
       for {

@@ -65,7 +65,7 @@ What is ZIO's main concurrency concept, a lightweight "green thread"?|fiber
 If a fiber is suspended and unreachable, what will be done automatically by the ZIO runtime?|garbage collection
 What type parameter does a Fiber not have that a ZIO effect does?|R
 Given an existing effect, what method is used to begin executing it on a new fiber?|fork
-What method on a Fiber returns its effect?|join
+What method on a Fiber returns its effect (yielding the result to other fibers)?|join
 What method on a Fiber returns an effect containing an Exit value, which provides full information on how the fiber completed?|await
 What method on a Fiber terminates it, safely releasing all resources?|interrupt
 What method on a Fiber combines it with another, creating a new Fiber that produces the results of both?|zip
@@ -73,7 +73,7 @@ What method in ZIO would you use to zip two effects together in parallel?|zipPar
 What method in ZIO would you use to collect from many effects?|collectAll
 What method in ZIO would you use to merge many values?|mergeAll
 What method would you use to run multiple effects in parallel, returning the first successful result?|race
-What method in ZIO let you timeout an effect?|timeout
+What method in ZIO lets you timeout an effect?|timeout
 What ZIO method is used provide direct access to the environment?|environment
 What ZIO method is used to access part of the environment when it is a type with fields?|access
 What ZIO method is used to access and execute an effect stored in the environment?|accessM

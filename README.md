@@ -66,6 +66,16 @@ If you learn something using your own quiz file, and feel it is a success, consi
 submitting it to this project (e.g. via a PR) so that other people may learn too.
 
 
+Other Resources
+===============
+
+If you are using this just to learn ZIO, you might consider using it
+as a supplement to the exercises written by John De Goes himself, including:
+
+- https://github.com/jdegoes/zio-workshop
+- https://github.com/jdegoes/functional-effects
+
+
 License
 =======
 

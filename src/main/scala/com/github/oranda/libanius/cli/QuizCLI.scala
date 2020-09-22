@@ -31,7 +31,7 @@ object QuizCLI extends App with AppDependencyAccess {
     quizCLI.exitCode
 
   val quizCLI: ZIO[Console, IOException, Quiz] = {
-      for {
+    for {
       qgHeaders <- availableQgHeaders
       quiz <- if (qgHeaders.isEmpty) QuizInit.loadDemoQuiz else QuizInit.loadQuiz(qgHeaders)
       quizUpdated <- putStrLn(Text.quizIntro(quiz)) *> QuizLoop.loop(quiz)

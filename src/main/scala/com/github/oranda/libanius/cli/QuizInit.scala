@@ -18,12 +18,12 @@ package com.github.oranda.libanius.cli
 
 import java.io.IOException
 
-import zio.{IO, UIO, URIO, ZIO}
-import zio.console.{Console, getStrLn, putStrLn}
+import zio.{ IO, UIO, URIO, ZIO }
+import zio.console.{ Console, getStrLn, putStrLn }
 
 import com.oranda.libanius.model.Quiz
 import com.oranda.libanius.model.action.modelComponentsAsQuizItemSources.dataStore
-import com.oranda.libanius.model.quizgroup.{QuizGroup, QuizGroupHeader}
+import com.oranda.libanius.model.quizgroup.{ QuizGroup, QuizGroupHeader }
 
 object QuizInit {
   val getUser: UIO[Quiz] = IO.succeed(Quiz.demoQuiz())
@@ -31,12 +31,11 @@ object QuizInit {
   val loadDemoQuiz: URIO[Console, Quiz] =
     putStrLn("No quiz groups found. Defaulting to dummy data.") *> IO.succeed(Quiz.demoQuiz())
 
-  def loadQuiz(availableQgHeaders: Seq[QuizGroupHeader]): ZIO[Console, IOException, Quiz] = {
+  def loadQuiz(availableQgHeaders: Seq[QuizGroupHeader]): ZIO[Console, IOException, Quiz] =
     for {
       qgHeaders <- getQuizGroupsFromUser(availableQgHeaders)
-      quiz <- quizForQgHeaders(qgHeaders)
+      quiz      <- quizForQgHeaders(qgHeaders)
     } yield quiz
-  }
 
   def getQuizGroupsFromUser(
     qgHeaders: Seq[QuizGroupHeader]
@@ -44,18 +43,18 @@ object QuizInit {
     val chooseQgsText =
       "\nChoose quiz group(s). For more than one, separate with commas, e.g. 1,2,3\n\n"
     for {
-      _ <- putStrLn(chooseQgsText + Text.quizGroupChoices(qgHeaders) + "\n")
+      _       <- putStrLn(chooseQgsText + Text.quizGroupChoices(qgHeaders) + "\n")
       choices <- getQgSelectionFromInput(qgHeaders)
     } yield choices
   }
 
   def getQgSelectionFromInput(
     availableQgHeaders: Seq[QuizGroupHeader]
-  ): ZIO[Console, IOException, Seq[QuizGroupHeader]] = {
+  ): ZIO[Console, IOException, Seq[QuizGroupHeader]] =
     for {
-      userInput <- getStrLn
-      validChoices = (1 to availableQgHeaders.size).map(_.toString)
-      userChoices = userInput.split(",")
+      userInput          <- getStrLn
+      validChoices        = (1 to availableQgHeaders.size).map(_.toString)
+      userChoices         = userInput.split(",")
       userChoicesAreValid = userChoices.toSet.subsetOf(validChoices.toSet)
       chosenOptions <-
         if (userChoicesAreValid)
@@ -63,7 +62,6 @@ object QuizInit {
         else
           putStrLn("\nUnrecognized option") *> getQuizGroupsFromUser(availableQgHeaders)
     } yield chosenOptions
-  }
 
   def quizForQgHeaders(qgHeaders: Seq[QuizGroupHeader]): IO[IOException, Quiz] = {
     val quizGroups: Map[QuizGroupHeader, QuizGroup] =

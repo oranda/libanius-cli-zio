@@ -18,68 +18,64 @@ package com.github.oranda.libanius.cli
 
 import java.io.IOException
 
-import zio.{IO, URIO, ZIO}
-import zio.console.{Console, getStrLn, putStrLn}
+import zio.{ IO, URIO, ZIO }
+import zio.console.{ Console, getStrLn, putStrLn }
 import com.oranda.libanius.dependencies.AppDependencyAccess
-import com.oranda.libanius.model.{Correct, Quiz}
+import com.oranda.libanius.model.{ Correct, Quiz }
 import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
 import com.oranda.libanius.util.StringUtil
 import com.oranda.libanius.model.action.FindQuizItem
 
 sealed trait UserConsoleResponse
 case class UserTextAnswer(text: String) extends UserConsoleResponse
-case object Quit extends UserConsoleResponse
+case object Quit                        extends UserConsoleResponse
 
 object QuizLoop extends AppDependencyAccess {
-  def loop(quiz: Quiz): ZIO[Console, IOException, Quiz] = {
+  def loop(quiz: Quiz): ZIO[Console, IOException, Quiz] =
     for {
       _ <- showQuizStatus(quiz)
       quiz <- FindQuizItem.run(quiz) match {
-        case None => putStrLn(Text.quizCompleted) *> IO.succeed(quiz)
-        case Some(quizItem) => runQuizItemAndLoop(quiz, quizItem)
-      }
+                case None           => putStrLn(Text.quizCompleted) *> IO.succeed(quiz)
+                case Some(quizItem) => runQuizItemAndLoop(quiz, quizItem)
+              }
     } yield quiz
-  }
 
   def runQuizItemAndLoop(
     quiz: Quiz,
     quizItem: QuizItemViewWithChoices
-  ): ZIO[Console, IOException, Quiz] = {
+  ): ZIO[Console, IOException, Quiz] =
     for {
       response <- askQuestionAndGetResponse(quizItem)
       newState <- response match {
-        case Quit => exit(quiz)
-        case UserTextAnswer(answer) => processQuizItemAndLoop(quiz, answer, quizItem)
-      }
+                    case Quit                   => exit(quiz)
+                    case UserTextAnswer(answer) => processQuizItemAndLoop(quiz, answer, quizItem)
+                  }
     } yield newState
-  }
 
   def exit(quiz: Quiz): ZIO[Console, IOException, Quiz] =
     putStrLn("Exiting...") *> IO.effect(dataStore.saveQuiz(quiz)).refineToOrDie[IOException]
 
   def askQuestionAndGetResponse(
     quizItem: QuizItemViewWithChoices
-  ): ZIO[Console, IOException, UserConsoleResponse] = {
+  ): ZIO[Console, IOException, UserConsoleResponse] =
     for {
       input <- putStrLn(s"${Text.question(quizItem)}") *> getStrLn
       userResponse <- input.trim match {
-        case "" =>           askQuestionAndGetResponse(quizItem)
-        case "q" | "quit" => IO.succeed(Quit)
-        case answer =>       IO.succeed(UserTextAnswer(answer))
-      }
+                        case ""           => askQuestionAndGetResponse(quizItem)
+                        case "q" | "quit" => IO.succeed(Quit)
+                        case answer       => IO.succeed(UserTextAnswer(answer))
+                      }
     } yield userResponse
-  }
 
   def processQuizItemAndLoop(
     quiz: Quiz,
     answer: String,
     quizItem: QuizItemViewWithChoices
-  ): ZIO[Console, IOException, Quiz] = {
+  ): ZIO[Console, IOException, Quiz] =
     for {
       updatedQuiz <- processQuizItem(quiz, answer, quizItem)
-      quiz <- loop(updatedQuiz)
+      quiz        <- loop(updatedQuiz)
     } yield quiz
-  }
 
   def processQuizItem(
     quiz: Quiz,
@@ -96,7 +92,7 @@ object QuizLoop extends AppDependencyAccess {
     answer: String,
     quizItem: QuizItemViewWithChoices
   ): URIO[Console, Quiz] = {
-    val validChoices = (1 to quizItem.allChoices.size).map(_.toString)
+    val validChoices    = (1 to quizItem.allChoices.size).map(_.toString)
     lazy val invalidMsg = s"'$answer' is not a valid choice. Please enter a number in the list."
     if (!validChoices.contains(answer)) {
       putStrLn("\n" + invalidMsg + "\n") *> IO.succeed(quiz)
@@ -111,14 +107,16 @@ object QuizLoop extends AppDependencyAccess {
     answer: String,
     quizItem: QuizItemViewWithChoices
   ): URIO[Console, Quiz] = {
-    val isCorrect = quiz.isCorrect(quizItem.quizGroupKey, quizItem.prompt.value, answer) == Correct
+    val isCorrect     = quiz.isCorrect(quizItem.quizGroupKey, quizItem.prompt.value, answer) == Correct
     lazy val wrongMsg = s"Wrong! It's ${quizItem.correctResponse} not $answer"
-    val message = if (isCorrect) "Correct!\n" else wrongMsg
-    putStrLn(s"\n$message\n") *> IO.succeed(quiz.updateWithUserResponse(
-      isCorrect,
-      quizItem.quizGroupHeader,
-      quizItem.quizItem
-    ))
+    val message       = if (isCorrect) "Correct!\n" else wrongMsg
+    putStrLn(s"\n$message\n") *> IO.succeed(
+      quiz.updateWithUserResponse(
+        isCorrect,
+        quizItem.quizGroupHeader,
+        quizItem.quizItem
+      )
+    )
   }
 
   def showQuizStatus(quiz: Quiz): URIO[Console, Unit] = {

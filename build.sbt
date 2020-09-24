@@ -22,3 +22,5 @@ scalacOptions ++= Seq("-Ywarn-unused", "-Yrangepos")
 
 addCompilerPlugin(scalafixSemanticdb)
 
+scalafmtOnCompile := true
+

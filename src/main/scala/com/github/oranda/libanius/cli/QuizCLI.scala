@@ -18,8 +18,8 @@ package com.github.oranda.libanius.cli
 
 import java.io.IOException
 
-import zio.{App, IO, ZIO}
-import zio.console.{Console, putStrLn}
+import zio.{ App, IO, ZIO }
+import zio.console.{ Console, putStrLn }
 
 import com.oranda.libanius.model.quizgroup.QuizGroupHeader
 import com.oranda.libanius.dependencies.AppDependencyAccess
@@ -32,13 +32,12 @@ object QuizCLI extends App with AppDependencyAccess {
 
   val quizCLI: ZIO[Console, IOException, Quiz] = {
     for {
-      qgHeaders <- availableQgHeaders
-      quiz <- if (qgHeaders.isEmpty) QuizInit.loadDemoQuiz else QuizInit.loadQuiz(qgHeaders)
+      qgHeaders   <- availableQgHeaders
+      quiz        <- if (qgHeaders.isEmpty) QuizInit.loadDemoQuiz else QuizInit.loadQuiz(qgHeaders)
       quizUpdated <- putStrLn(Text.quizIntro(quiz)) *> QuizLoop.loop(quiz)
     } yield quizUpdated
   }
 
-  def availableQgHeaders: IO[IOException, Seq[QuizGroupHeader]] = {
+  def availableQgHeaders: IO[IOException, Seq[QuizGroupHeader]] =
     IO.effect(dataStore.findAvailableQuizGroups.toSeq).refineToOrDie[IOException]
-  }
 }

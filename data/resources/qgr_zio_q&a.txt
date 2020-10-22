@@ -93,7 +93,7 @@ What ZIO data type models a mutable reference to a value?|Ref
 What ZIO data type models a mutable reference to a value, bound to an executing Fiber only?|FiberRef
 What is ZIO's fast, pure alternative to a Scala Array?|Chunk
 What ZIO data type is an array of mutable references that can participate in transactions?|TArray
-What ZIO data type is a mutable reference that can be set exactly once and can participate in transactions?|TPromised
+What ZIO data type is a mutable reference that can be set exactly once and can participate in transactions?|TPromise
 What ZIO data type describes a layer of an application?|ZLayer
 What ZIO data type is used to express an effect's dependency on a service of type A?|Has
 What ZIO data type is a lazy, concurrent, asynchronous source of values?|Stream

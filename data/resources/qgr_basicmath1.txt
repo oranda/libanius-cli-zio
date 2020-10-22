@@ -1,4 +1,4 @@
-﻿#quizGroup promptType="Basic Math 1" responseType="Answer" type="QuestionAndAnswer" numCorrectResponsesRequired="6" useMultipleChoiceUntil="4" isActive="true" currentPromptNumber="0"
+#quizGroup promptType="BasicMath1" responseType="Answer" type="QuestionAndAnswer" numCorrectResponsesRequired="6" useMultipleChoiceUntil="4" isActive="true" currentPromptNumber="0"
 #quizGroupPartition numCorrectResponsesInARow="0"
 24+24+24=24+__+26  What number comes in the blank to make the number sentence correct?|22
 If 10 years is 1 decade, how many decades are there in a century?|10

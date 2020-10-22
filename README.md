@@ -24,7 +24,7 @@ To install, either download the zip file for this project or clone it with git:
 Usage
 =====
 
-After installing cd to the libanius-cli-zio directory and run it:
+After installing, open a terminal, go to the libanius-cli-zio directory, and run it:
 
     sbt run
     

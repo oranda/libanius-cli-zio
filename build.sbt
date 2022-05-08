@@ -1,27 +1,24 @@
-
 organization := "com.github.oranda"
 name := "libanius-cli-zio"
-version := "0.3.3.1"
+version := "0.4"
 
-scalaVersion := "2.12.12"
+val ZIOVersion = "2.0.0-RC5"
 
-val ZIOVersion = "1.0.0"
+scalaVersion := "3.1.3-RC2"
+
+resolvers ++= Seq("mvnrepository" at "https://mvnrepository.com/artifact/")
+
+resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies ++= Seq(
-  "com.typesafe" % "config" % "1.3.4",
-  "dev.zio" %% "zio" % ZIOVersion,
-  "com.github.oranda" %% "libanius" % "0.9.8.7.2",
-  "dev.zio" %% "zio-test" % ZIOVersion % "test",
-  "dev.zio" %% "zio-test-sbt" % ZIOVersion % "test"
+  "com.typesafe" % "config" % "1.4.0",
+  "dev.zio" % "zio_3" % ZIOVersion,
+  "dev.zio" % "zio-test_3" % ZIOVersion % "test",
+  "dev.zio" % "zio-test-sbt_3" % ZIOVersion % "test"
 )
 
 testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework"))
 
-dependencyOverrides += "com.lihaoyi" %% "fastparse" % "1.0.0"
-
-scalacOptions ++= Seq("-Ywarn-unused", "-Yrangepos")
-
-addCompilerPlugin(scalafixSemanticdb)
+scalacOptions ++= Seq("-new-syntax", "-rewrite", "-feature")
 
 scalafmtOnCompile := true
-

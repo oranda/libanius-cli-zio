@@ -2,8 +2,8 @@ Libanius-CLI-ZIO
 ================
 
 This is a command-line interface to the [Libanius](https://github.com/oranda/libanius) quiz 
-library. Everything is implemented in Scala. This CLI is implemented 
-using [ZIO](https://github.com/zio/zio).
+library. Everything is implemented in Scala 3. This CLI is implemented 
+using [ZIO 2](https://github.com/zio/zio).
 
 Suggestions for new features and code improvements will be happily received by:
 
@@ -13,12 +13,16 @@ James McCabe <jjtmccabe@gmail.com>
 Installation
 ============
 
-You need to have Scala installed. This project should work with most recent 2.x versions. It has been 
-tested with Scala 2.12.6, Java 8, and sbt 1.3.8.
+You need to have Scala 3 installed. This project has been tested with Scala 3.1.3 and sbt 1.5. (If 
+you get any SSL Certificate issues downloading dependencies, upgrade your JDK version to 16+.)
 
 To install, either download the zip file for this project or clone it with git:
 
     git clone git://github.com/oranda/libanius-cli-zio
+
+If you are still using Scala 2.x, a recent release of this project should work:
+   
+    https://github.com/oranda/libanius-cli-zio/archive/refs/tags/v0.3.2.zip
 
 
 Usage
@@ -80,6 +84,3 @@ License
 =======
 
 Libanius-CLI-ZIO is licensed under the terms of the Apache 2.0 license.
-                      
-                      
-

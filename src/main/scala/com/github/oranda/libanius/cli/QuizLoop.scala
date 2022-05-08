@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 James McCabe
+ * Copyright 2019-2022 James McCabe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,70 +19,71 @@ package com.github.oranda.libanius.cli
 import java.io.IOException
 
 import zio.{ IO, URIO, ZIO }
-import zio.console.{ Console, getStrLn, putStrLn }
 import com.oranda.libanius.dependencies.AppDependencyAccess
 import com.oranda.libanius.model.{ Correct, Quiz }
 import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
 import com.oranda.libanius.util.StringUtil
 import com.oranda.libanius.model.action.FindQuizItem
+import zio.Console
+import zio.Console.{ printLine, readLine }
 
 sealed trait UserConsoleResponse
 case class UserTextAnswer(text: String) extends UserConsoleResponse
 case object Quit                        extends UserConsoleResponse
 
 object QuizLoop extends AppDependencyAccess {
-  def loop(quiz: Quiz): ZIO[Console, IOException, Quiz] =
-    for {
+  def loop(quiz: Quiz): IO[IOException, Quiz] =
+    for
       _ <- showQuizStatus(quiz)
       quiz <- FindQuizItem.run(quiz) match {
-                case None           => putStrLn(Text.quizCompleted) *> IO.succeed(quiz)
+                case None           => printLine(Text.quizCompleted) *> ZIO.succeed(quiz)
                 case Some(quizItem) => runQuizItemAndLoop(quiz, quizItem)
               }
-    } yield quiz
+    yield quiz
 
   def runQuizItemAndLoop(
     quiz: Quiz,
     quizItem: QuizItemViewWithChoices
-  ): ZIO[Console, IOException, Quiz] =
-    for {
+  ): IO[IOException, Quiz] =
+    for
       response <- askQuestionAndGetResponse(quizItem)
       newState <- response match {
                     case Quit                   => exit(quiz)
                     case UserTextAnswer(answer) => processQuizItemAndLoop(quiz, answer, quizItem)
                   }
-    } yield newState
+    yield newState
 
-  def exit(quiz: Quiz): ZIO[Console, IOException, Quiz] =
-    putStrLn("Exiting...") *> IO.effect(dataStore.saveQuiz(quiz)).refineToOrDie[IOException]
+  def exit(quiz: Quiz): IO[IOException, Quiz] =
+    printLine("Exiting...") *> ZIO.attempt(dataStore.saveQuiz(quiz)).refineToOrDie[IOException]
 
   def askQuestionAndGetResponse(
     quizItem: QuizItemViewWithChoices
-  ): ZIO[Console, IOException, UserConsoleResponse] =
-    for {
-      input <- putStrLn(s"${Text.question(quizItem)}") *> getStrLn
+  ): IO[IOException, UserConsoleResponse] =
+    for
+      input <- printLine(s"${Text.question(quizItem)}") *> readLine
       userResponse <- input.trim match {
                         case ""           => askQuestionAndGetResponse(quizItem)
-                        case "q" | "quit" => IO.succeed(Quit)
-                        case answer       => IO.succeed(UserTextAnswer(answer))
+                        case "q" | "quit" => ZIO.succeed(Quit)
+                        case answer       => ZIO.succeed(UserTextAnswer(answer))
                       }
-    } yield userResponse
+    yield userResponse
 
   def processQuizItemAndLoop(
     quiz: Quiz,
     answer: String,
     quizItem: QuizItemViewWithChoices
-  ): ZIO[Console, IOException, Quiz] =
-    for {
+  ): IO[IOException, Quiz] =
+    for
       updatedQuiz <- processQuizItem(quiz, answer, quizItem)
       quiz        <- loop(updatedQuiz)
-    } yield quiz
+    yield quiz
 
   def processQuizItem(
     quiz: Quiz,
     answer: String,
     quizItem: QuizItemViewWithChoices
-  ): URIO[Console, Quiz] =
-    if (quizItem.useMultipleChoice)
+  ): IO[IOException, Quiz] =
+    if quizItem.useMultipleChoice then
       processMultipleChoiceItem(quiz, answer, quizItem)
     else
       processUserAnswer(quiz, answer, quizItem)
@@ -91,11 +92,11 @@ object QuizLoop extends AppDependencyAccess {
     quiz: Quiz,
     answer: String,
     quizItem: QuizItemViewWithChoices
-  ): URIO[Console, Quiz] = {
+  ): IO[IOException, Quiz] = {
     val validChoices    = (1 to quizItem.allChoices.size).map(_.toString)
     lazy val invalidMsg = s"'$answer' is not a valid choice. Please enter a number in the list."
-    if (!validChoices.contains(answer)) {
-      putStrLn("\n" + invalidMsg + "\n") *> IO.succeed(quiz)
+    if !validChoices.contains(answer) then {
+      printLine("\n" + invalidMsg + "\n") *> ZIO.succeed(quiz)
     } else {
       val selectedAnswer = quizItem.allChoices(answer.toInt - 1)
       processUserAnswer(quiz, selectedAnswer, quizItem)
@@ -106,11 +107,11 @@ object QuizLoop extends AppDependencyAccess {
     quiz: Quiz,
     answer: String,
     quizItem: QuizItemViewWithChoices
-  ): URIO[Console, Quiz] = {
+  ): IO[IOException, Quiz] = {
     val isCorrect     = quiz.isCorrect(quizItem.quizGroupKey, quizItem.prompt.value, answer) == Correct
     lazy val wrongMsg = s"Wrong! It's ${quizItem.correctResponse} not $answer"
-    val message       = if (isCorrect) "Correct!\n" else wrongMsg
-    putStrLn(s"\n$message\n") *> IO.succeed(
+    val message       = if isCorrect then "Correct!\n" else wrongMsg
+    printLine(s"\n$message\n") *> ZIO.succeed(
       quiz.updateWithUserResponse(
         isCorrect,
         quizItem.quizGroupHeader,
@@ -119,8 +120,8 @@ object QuizLoop extends AppDependencyAccess {
     )
   }
 
-  def showQuizStatus(quiz: Quiz): URIO[Console, Unit] = {
+  def showQuizStatus(quiz: Quiz): IO[IOException, Unit] = {
     val formattedScore = StringUtil.formatScore(quiz.scoreSoFar)
-    putStrLn(s"Score: $formattedScore\n")
+    printLine(s"Score: $formattedScore\n")
   }
 }

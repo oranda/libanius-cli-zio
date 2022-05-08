@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 James McCabe
+ * Copyright 2019-2022 James McCabe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,9 +40,9 @@ object Text {
 
   def question(quizItem: QuizItemViewWithChoices): String = {
     val wordText           = s": what is the ${quizItem.responseType} for this ${quizItem.promptType}?"
-    val wordTextToShow     = if (quizItem.isWordMapping) wordText else ""
+    val wordTextToShow     = if quizItem.isWordMapping then wordText else ""
     val answeredText       = s" (correctly answered ${quizItem.numCorrectResponsesInARow} times)"
-    val answeredTextToShow = if (quizItem.numCorrectResponsesInARow > 0) answeredText else ""
+    val answeredTextToShow = if quizItem.numCorrectResponsesInARow > 0 then answeredText else ""
     val questionText       = "(" + quizItem.qgCurrentPromptNumber + "): " + quizItem.prompt
 
     lazy val choicesText = "\n\n" + {
@@ -52,7 +52,7 @@ object Text {
       }.mkString
     }
     lazy val notMultipleChoiceText = "\n(Not multiple choice now. Type it in.)"
-    val extraText                  = if (quizItem.useMultipleChoice) choicesText else notMultipleChoiceText
+    val extraText                  = if quizItem.useMultipleChoice then choicesText else notMultipleChoiceText
     val fullQuestionText           = questionText + wordTextToShow + answeredTextToShow + extraText
     fullQuestionText
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 James McCabe
+ * Copyright 2019-2022 James McCabe
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,27 +17,23 @@
 package com.github.oranda.libanius.cli
 
 import java.io.IOException
-
-import zio.{ App, IO, ZIO }
-import zio.console.{ Console, putStrLn }
-
+import zio.{ Console, IO, ZEnvironment, ZIO, ZIOAppDefault }
+import com.github.oranda.libanius.cli.QuizCLI.validateEnv
 import com.oranda.libanius.model.quizgroup.QuizGroupHeader
 import com.oranda.libanius.dependencies.AppDependencyAccess
 import com.oranda.libanius.model.Quiz
+import zio.Console._
 
-object QuizCLI extends App with AppDependencyAccess {
+object QuizCLI extends ZIOAppDefault with AppDependencyAccess {
+  def run = quizCLI
 
-  def run(args: List[String]) =
-    quizCLI.exitCode
-
-  val quizCLI: ZIO[Console, IOException, Quiz] = {
-    for {
-      qgHeaders   <- availableQgHeaders
-      quiz        <- if (qgHeaders.isEmpty) QuizInit.loadDemoQuiz else QuizInit.loadQuiz(qgHeaders)
-      quizUpdated <- putStrLn(Text.quizIntro(quiz)) *> QuizLoop.loop(quiz)
-    } yield quizUpdated
-  }
+  val quizCLI: ZIO[Any, IOException, Unit] =
+    for
+      qgHeaders <- availableQgHeaders
+      quiz      <- if qgHeaders.isEmpty then QuizInit.loadDemoQuiz else QuizInit.loadQuiz(qgHeaders)
+      _         <- printLine(Text.quizIntro(quiz)) *> QuizLoop.loop(quiz)
+    yield ()
 
   def availableQgHeaders: IO[IOException, Seq[QuizGroupHeader]] =
-    IO.effect(dataStore.findAvailableQuizGroups.toSeq).refineToOrDie[IOException]
+    ZIO.attempt(dataStore.findAvailableQuizGroups.toSeq).refineToOrDie[IOException]
 }

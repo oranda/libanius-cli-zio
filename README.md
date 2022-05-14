@@ -18,7 +18,7 @@ you get any SSL Certificate issues downloading dependencies, upgrade your JDK ve
 
 To install, either download the zip file for this project or clone it with git:
 
-    git clone git://github.com/oranda/libanius-cli-zio
+    git clone https://github.com/oranda/libanius-cli-zio
 
 If you are still using Scala 2.x, a recent release of this project should work:
    

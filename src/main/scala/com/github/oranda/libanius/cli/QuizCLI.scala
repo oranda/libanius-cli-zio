@@ -17,23 +17,18 @@
 package com.github.oranda.libanius.cli
 
 import java.io.IOException
-import zio.{ Console, IO, ZEnvironment, ZIO, ZIOAppDefault }
-import com.github.oranda.libanius.cli.QuizCLI.validateEnv
+import zio._
 import com.oranda.libanius.model.quizgroup.QuizGroupHeader
 import com.oranda.libanius.dependencies.AppDependencyAccess
 import com.oranda.libanius.model.Quiz
 import zio.Console._
 
-object QuizCLI extends ZIOAppDefault with AppDependencyAccess {
-  def run = quizCLI
-
-  val quizCLI: ZIO[Any, IOException, Unit] =
+object QuizCLI {
+  def runCLI: ZIO[PersistentData, Throwable, Unit] =
     for
-      qgHeaders <- availableQgHeaders
+      data      <- ZIO.service[PersistentData]
+      qgHeaders <- data.findAvailableQuizGroups
       quiz      <- if qgHeaders.isEmpty then QuizInit.loadDemoQuiz else QuizInit.loadQuiz(qgHeaders)
       _         <- printLine(Text.quizIntro(quiz)) *> QuizLoop.loop(quiz)
     yield ()
-
-  def availableQgHeaders: IO[IOException, Seq[QuizGroupHeader]] =
-    ZIO.attempt(dataStore.findAvailableQuizGroups.toSeq).refineToOrDie[IOException]
 }

@@ -18,43 +18,47 @@ package com.github.oranda.libanius.cli
 
 import java.io.IOException
 
-import zio.{ IO, URIO, ZIO }
+import zio.{IO, URIO, ZIO}
 import com.oranda.libanius.dependencies.AppDependencyAccess
-import com.oranda.libanius.model.{ Correct, Quiz }
+import com.oranda.libanius.model.{Correct, Quiz}
 import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
 import com.oranda.libanius.util.StringUtil
 import com.oranda.libanius.model.action.FindQuizItem
 import zio.Console
-import zio.Console.{ printLine, readLine }
+import zio.Console.{printLine, readLine}
 
 sealed trait UserConsoleResponse
 case class UserTextAnswer(text: String) extends UserConsoleResponse
 case object Quit                        extends UserConsoleResponse
 
-object QuizLoop extends AppDependencyAccess {
-  def loop(quiz: Quiz): IO[IOException, Quiz] =
+object QuizLoop {
+  def loop(quiz: Quiz): ZIO[PersistentData, IOException, Unit] =
     for
       _ <- showQuizStatus(quiz)
-      quiz <- FindQuizItem.run(quiz) match {
-                case None           => printLine(Text.quizCompleted) *> ZIO.succeed(quiz)
-                case Some(quizItem) => runQuizItemAndLoop(quiz, quizItem)
-              }
-    yield quiz
+      _ <- FindQuizItem.run(quiz) match {
+             case None           => printLine(Text.quizCompleted) *> ZIO.succeed(quiz)
+             case Some(quizItem) => runQuizItemAndLoop(quiz, quizItem)
+           }
+    yield ()
 
   def runQuizItemAndLoop(
     quiz: Quiz,
     quizItem: QuizItemViewWithChoices
-  ): IO[IOException, Quiz] =
+  ): ZIO[PersistentData, IOException, Unit] =
     for
       response <- askQuestionAndGetResponse(quizItem)
-      newState <- response match {
-                    case Quit                   => exit(quiz)
-                    case UserTextAnswer(answer) => processQuizItemAndLoop(quiz, answer, quizItem)
-                  }
-    yield newState
+      _ <- response match {
+             case Quit                   => exit(quiz)
+             case UserTextAnswer(answer) => processQuizItemAndLoop(quiz, answer, quizItem)
+           }
+    yield ()
 
-  def exit(quiz: Quiz): IO[IOException, Quiz] =
-    printLine("Exiting...") *> ZIO.attempt(dataStore.saveQuiz(quiz)).refineToOrDie[IOException]
+  def exit(quiz: Quiz): ZIO[PersistentData, IOException, Unit] =
+    for
+      _    <- printLine("Saving quiz state...")
+      data <- ZIO.service[PersistentData]
+      _    <- ZIO.blocking(data.saveQuiz(quiz).refineToOrDie[IOException])
+    yield ()
 
   def askQuestionAndGetResponse(
     quizItem: QuizItemViewWithChoices
@@ -72,21 +76,19 @@ object QuizLoop extends AppDependencyAccess {
     quiz: Quiz,
     answer: String,
     quizItem: QuizItemViewWithChoices
-  ): IO[IOException, Quiz] =
+  ): ZIO[PersistentData, IOException, Unit] =
     for
       updatedQuiz <- processQuizItem(quiz, answer, quizItem)
-      quiz        <- loop(updatedQuiz)
-    yield quiz
+      _           <- loop(updatedQuiz)
+    yield ()
 
   def processQuizItem(
     quiz: Quiz,
     answer: String,
     quizItem: QuizItemViewWithChoices
-  ): IO[IOException, Quiz] =
-    if quizItem.useMultipleChoice then
-      processMultipleChoiceItem(quiz, answer, quizItem)
-    else
-      processUserAnswer(quiz, answer, quizItem)
+  ): ZIO[PersistentData, IOException, Quiz] =
+    if quizItem.useMultipleChoice then processMultipleChoiceItem(quiz, answer, quizItem)
+    else processUserAnswer(quiz, answer, quizItem)
 
   def processMultipleChoiceItem(
     quiz: Quiz,

@@ -17,7 +17,6 @@
 package com.github.oranda.libanius.cli
 
 import com.oranda.libanius.model.Quiz
-import com.oranda.libanius.model.action.modelComponentsAsQuizItemSources.dataStore
 import com.oranda.libanius.model.quizgroup.{QuizGroup, QuizGroupHeader}
 import zio.Console.{printLine, readLine}
 import zio.{Console, IO, UIO, URIO, ZIO}

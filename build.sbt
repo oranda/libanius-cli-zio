@@ -21,4 +21,4 @@ testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework"))
 
 scalacOptions ++= Seq("-new-syntax", "-rewrite", "-feature")
 
-scalafmtOnCompile := true
+scalafmtOnCompile := false

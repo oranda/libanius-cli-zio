@@ -16,12 +16,13 @@
 
 package com.github.oranda.libanius.cli
 
-import java.io.IOException
-import zio._
-import com.oranda.libanius.model.quizgroup.QuizGroupHeader
 import com.oranda.libanius.dependencies.AppDependencyAccess
 import com.oranda.libanius.model.Quiz
-import zio.Console._
+import com.oranda.libanius.model.quizgroup.QuizGroupHeader
+import zio.*
+import zio.Console.*
+
+import java.io.IOException
 
 object QuizCLI {
   def runCLI: ZIO[PersistentData, Throwable, Unit] =

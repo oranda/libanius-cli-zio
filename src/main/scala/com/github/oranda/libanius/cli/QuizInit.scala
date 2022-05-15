@@ -16,15 +16,13 @@
 
 package com.github.oranda.libanius.cli
 
-import java.io.IOException
-
-import zio.{IO, UIO, URIO, ZIO}
-
 import com.oranda.libanius.model.Quiz
 import com.oranda.libanius.model.action.modelComponentsAsQuizItemSources.dataStore
 import com.oranda.libanius.model.quizgroup.{QuizGroup, QuizGroupHeader}
-import zio.Console
 import zio.Console.{printLine, readLine}
+import zio.{Console, IO, UIO, URIO, ZIO}
+
+import java.io.IOException
 
 object QuizInit {
   val getUser: UIO[Quiz] = ZIO.succeed(Quiz.demoQuiz())

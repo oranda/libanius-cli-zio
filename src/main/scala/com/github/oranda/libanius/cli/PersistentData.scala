@@ -1,11 +1,11 @@
 package com.github.oranda.libanius.cli
 
-import java.io.IOException
-
-import com.oranda.libanius.dependencies._
+import com.oranda.libanius.dependencies.*
 import com.oranda.libanius.model.Quiz
 import com.oranda.libanius.model.quizgroup.{QuizGroup, QuizGroupHeader}
 import zio.{IO, Task, UIO, ZIO, ZLayer}
+
+import java.io.IOException
 
 trait PersistentData {
   def findAvailableQuizGroups: ZIO[PersistentData, Throwable, Seq[QuizGroupHeader]]

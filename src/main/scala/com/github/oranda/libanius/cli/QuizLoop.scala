@@ -16,16 +16,15 @@
 
 package com.github.oranda.libanius.cli
 
-import java.io.IOException
-
-import zio.{IO, URIO, ZIO}
 import com.oranda.libanius.dependencies.AppDependencyAccess
-import com.oranda.libanius.model.{Correct, Quiz}
-import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
-import com.oranda.libanius.util.StringUtil
 import com.oranda.libanius.model.action.FindQuizItem
-import zio.Console
+import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
+import com.oranda.libanius.model.{Correct, Quiz}
+import com.oranda.libanius.util.StringUtil
 import zio.Console.{printLine, readLine}
+import zio.{Console, IO, URIO, ZIO}
+
+import java.io.IOException
 
 sealed trait UserConsoleResponse
 case class UserTextAnswer(text: String) extends UserConsoleResponse

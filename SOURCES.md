@@ -17,7 +17,10 @@ Author: Matthias Buchmeier
 Remote translation <br/>
 Source: MyMemory by Translated.net
 
-ZIO overview  <br/>
-https://zio.dev/docs/overview/overview_index
+ZIO 2 overview  <br/>
+https://zio.dev/next/overview
+
+ZIO 1.x overview  <br/>
+https://zio.dev/version-1.x/overview/
 
 

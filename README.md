@@ -33,7 +33,7 @@ After installing, open a terminal, go to the libanius-cli-zio directory, and run
     sbt run
     
 You will be presented with a list of quiz groups. Pick the one you're interested in, for instance
-the ZIO quiz, and the quiz will start.
+the ZIO 2 quiz, and the quiz will start.
 
 There is a lot of repetition in the quiz to aid learning. You have to answer a question 
 correctly at least 6 times to be done with it. The first 4 times are multiple-choice: the 

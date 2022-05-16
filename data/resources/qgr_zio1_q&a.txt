@@ -1,0 +1,102 @@
+#quizGroup promptType="ZIO 1.x Question" responseType="Answer" type="QuestionAndAnswer" numCorrectResponsesRequired="4" useMultipleChoiceUntil="2" isActive="true" currentPromptNumber="0"
+#quizGroupPartition numCorrectResponsesInARow="0"
+What is the only effect data type in ZIO?|ZIO
+What is the type parameter for the Environment Type?|R
+What is the type parameter for the Failure Type?|E
+What is the type parameter for the Success Type?|A
+If an effect has no requirements, what should be the type of R?|Any
+If an effect cannot fail, what should be the type of E?|Nothing
+If an effect has no useful value on success, what should be the type of A?|Unit
+If an effect runs forever (or until failure), what should be the type of A?|Nothing
+What is the type alias for an effect that has no requirements, and cannot fail, but can succeed with an A?|UIO
+What is the type alias for an effect that has requirements, and cannot fail, but can succeed with an A?|URIO
+What is the type alias for an effect that has no requirements, and may fail with a Throwable value, or succeed with an A?|Task
+What is the type alias for an effect that has requirements, and may fail with a Throwable value, or succeed with an A?|RIO
+What is the type alias for an effect that has no requirements and may fail with an E, or succeed with an A?|IO
+What type alias is useful for threading environments through third-party libraries and your application?|RIO
+What type alias in ZIO most closely corresponds to Scala's Future type?|Task
+What method in ZIO would you use to create an effect that succeeds with a given value?|succeed
+In what special way is the parameter to ZIO's succeed called?|by-name
+What method in ZIO might you use instead of succeed if you know your value is constructed with side effects?|effectTotal
+What method in ZIO would you use to create an effect that fails with a given value?|fail
+What method does UIO lack that most other type aliases have?|fail
+What method in ZIO would you use to convert a Scala Option into a ZIO effect?|fromOption
+What method would you use to transform the failure value of an effect to an Exception?|mapError
+What method in ZIO would you use to convert an Either into a ZIO effect?|fromEither
+What method in ZIO would you use to convert a function A => B into a ZIO effect?|fromFunction
+What method in ZIO would you use to convert a Try value into a ZIO effect?|fromTry
+What method in ZIO would you use to convert a Future into a ZIO effect?|fromFuture
+What do you need to pass to fromFuture to allow ZIO to manage where the Future runs?|ExecutionContext
+What method in ZIO would you use to convert a synchronous side-effect (such as StdIn.readLine()) into a ZIO effect?|effect
+What method in ZIO might you use instead of effect if you know the side-effect being converted throws no exceptions?|effectTotal
+What method in ZIO would you use to refine the error type of an effect (by treating other errors as fatal)?|refineToOrDie
+What method in ZIO would you use to convert an asynchronous side-effect with a callback-based API to a ZIO effect?|effectAsync
+What package in ZIO is used to convert blocking side-effects into ZIO effects?|zio.blocking
+What method would you use to convert a blocking side-effect (such as Thread.sleep(10)) into a ZIO effect?|effectBlocking
+What method in ZIO is used to invoke Thread.interrupt to interrupt blocking side-effects?|effectBlockingInterrupt
+What method in ZIO would you use to invoke a cancellation effect on a blocking side-effect?|effectBlockingCancelable
+What method in ZIO would you use to ensure a ZIO effect will be executed on the blocking thread pool?|blocking
+What method in ZIO would you use to map over the success channel of an effect?|map
+What method in ZIO would you use to map over the error channel of an effect?|mapError
+What method would you use to chain two effects in sequence?|flatMap
+What Scala idiom is useful for composing chains of effects?|for comprehension
+What method in ZIO would you use to combine two effects into a single effect that contains the success value of both effects?|zip
+In a zip operation, if either the left or right hand sides fail, will the composed effect succeed or fail?|fail
+What method in ZIO would you use to combine two effects but discard the first, e.g. in putStrLn("What is your name?").????????(getStrLn)?|zipRight
+What is the symbolic alias for zipRight?|*>
+What is the symbolic alias for zipLeft?|<*
+What method in ZIO would you use to convert a ZIO[R, E, A] to a ZIO[R, Nothing, Either[E, A]]  (surfacing a failure)?|either
+What method in ZIO would you use to convert a ZIO[R, Nothing, Either[E, A]] to a ZIO[R, E, A] (submerging a failure)?|absolve
+What method would you use to catch and recover from all types of error, e.g. in openFile("primary.json").????????(_ => openFile("backup.json")) (fill in the blank)?|catchAll
+What method would you use to catch and recover from specified exceptions?|catchSome
+What method would you use to try another method if one fails (fallback), e.g. in openFile("primary.json").??????(_ => openFile("backup.json")) (fill in the blank)?|orElse
+What method would you use to handle both success and failure, where a non-effectful handler is supplied for each case?|fold
+What method would you use to handle both success and failure, where an effectful handler is supplied for each case?|foldM
+What method in ZIO is used for retrying effects and takes a Schedule?|retry
+What method in ZIO is used for retrying effects and allows a fallback to be specified?|retryOrElse
+What method in ZIO is used for retrying effects and allows returning a different type for the fallback?|retryOrElseEither
+What method in ZIO provides similar functionality to try / finally?|ensuring
+Will nested finalizers be executed linearly or in parallel?|linearly
+What method in ZIO is used to safely acquire and release resources?|bracket
+When ZIO's bracket is used, what is the first effect that is run?|acquire
+When ZIO's bracket is used, what effect is guaranteed to be run after acquire, even if there is an error or interruption?|release
+When ZIO's bracket is used, what effect is run between release and acquire?|use
+What is ZIO's main concurrency concept, a lightweight "green thread"?|fiber
+If a fiber is suspended and unreachable, what will be done automatically by the ZIO runtime?|garbage collection
+What type parameter does a Fiber not have that a ZIO effect does?|R
+Given an existing effect, what method is used to begin executing it on a new fiber?|fork
+What method on a Fiber returns its effect (yielding the result to other fibers)?|join
+What method on a Fiber returns an effect containing an Exit value, which provides full information on how the fiber completed?|await
+What method on a Fiber terminates it, safely releasing all resources?|interrupt
+What method on a Fiber combines it with another, creating a new Fiber that produces the results of both?|zip
+What method in ZIO would you use to zip two effects together in parallel?|zipPar
+What method in ZIO would you use to collect from many effects?|collectAll
+What method in ZIO would you use to merge many values?|mergeAll
+What method would you use to run multiple effects in parallel, returning the first successful result?|race
+What method in ZIO lets you timeout an effect?|timeout
+What ZIO method is used provide direct access to the environment?|environment
+What ZIO method is used to access part of the environment when it is a type with fields?|access
+What ZIO method is used to access and execute an effect stored in the environment?|accessM
+What is an effect called when it is accessed from the environment?|environmental effect
+What method in ZIO would you use to provide an effect with the environment that it requires?|provide
+In ZIO what do you call an interface that contains a single field providing access to a service?|module
+For fiber-safety, what would you use instead of a var?|Ref
+What ZIO class provides Scala with a main function and requires implementation of run?|zio.App
+What is the default runtime that ZIO provides?|Runtime.default
+What method can be used on a ZIO runtime to synchronously execute effects?|unsafeRun
+To create a custom Runtime, you need to supply an Environment and a ???????? ?|Platform
+Where are errors logged by the unhandled error reporter for the default Platform?|standard error
+What ZIO data type represents an effect that can be performed transactionally resulting in a failure or success?|STM
+What ZIO data type represents a value that describes a perishable resource that may be consumed only once inside a given scope?|Managed
+What ZIO data type is a model of a variable that may be set a single time, and awaited on by many fibers?|Promise
+What ZIO data type models a mutable reference to a value?|Ref
+What ZIO data type models a mutable reference to a value, bound to an executing Fiber only?|FiberRef
+What is ZIO's fast, pure alternative to a Scala Array?|Chunk
+What ZIO data type is an array of mutable references that can participate in transactions?|TArray
+What ZIO data type is a mutable reference that can be set exactly once and can participate in transactions?|TPromise
+What ZIO data type describes a layer of an application?|ZLayer
+What ZIO data type is used to express an effect's dependency on a service of type A?|Has
+What ZIO data type is a lazy, concurrent, asynchronous source of values?|ZStream
+What ZIO data type is a consumer of values from a Stream?|Sink
+What library allows interoperability between ZIO and Cats/Cats Effect?|interop-cats
+What library allows interoperability between ZIO and Reactive Streams?|interop-reactive-streams

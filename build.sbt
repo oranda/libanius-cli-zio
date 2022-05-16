@@ -1,6 +1,6 @@
 organization := "com.github.oranda"
 name := "libanius-cli-zio"
-version := "0.4"
+version := "0.4.1"
 
 val ZIOVersion = "2.0.0-RC5"
 
@@ -12,6 +12,7 @@ resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies ++= Seq(
   "com.typesafe" % "config" % "1.4.0",
+  "com.github.oranda" % "libanius_3" % "0.9.9.1",
   "dev.zio" % "zio_3" % ZIOVersion,
   "dev.zio" % "zio-test_3" % ZIOVersion % "test",
   "dev.zio" % "zio-test-sbt_3" % ZIOVersion % "test"

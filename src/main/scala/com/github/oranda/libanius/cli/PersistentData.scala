@@ -21,7 +21,7 @@ object PersistentData extends AppDependencyAccess {
           l.logError("Could not find available quiz groups", e)
           UIO.succeed(Seq())
         case Right(quizGroups) =>
-          UIO.succeed(quizGroups.toSeq)
+          UIO.succeed(quizGroups.toSeq.sortBy(_.quizGroupType.str))
       }
 
     def loadQuizForQgHeaders(

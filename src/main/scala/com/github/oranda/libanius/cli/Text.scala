@@ -34,9 +34,7 @@ object Text {
                                  |OK, the quiz begins! To quit, type q at any time.|""".stripMargin
 
   def quizGroupChoices(choices: Seq[QuizGroupHeader]): String =
-    choices.zipWithIndex.map { case (header, index) =>
-      (index + 1) + ". " + header
-    }.mkString("\n")
+    choices.zipWithIndex.map { case (header, index) => s"${index + 1}.$header\n"}.mkString("\n")
 
   def question(quizItem: QuizItemViewWithChoices): String = {
     val wordText           = s": what is the ${quizItem.responseType} for this ${quizItem.promptType}?"
@@ -47,9 +45,7 @@ object Text {
 
     lazy val choicesText = "\n\n" + {
       val choices = ChoiceGroupStrings(quizItem.allChoices)
-      choices.choicesWithIndex.map { case (header, index) =>
-        (index + 1).toString + ". " + header + "\n"
-      }.mkString
+      choices.choicesWithIndex.map { case (header, index) => s"${index + 1}. $header\n"}.mkString
     }
     lazy val notMultipleChoiceText = "\n(Not multiple choice now. Type it in.)"
     val extraText                  = if quizItem.useMultipleChoice then choicesText else notMultipleChoiceText

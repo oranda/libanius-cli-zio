@@ -19,6 +19,7 @@ Source: MyMemory by Translated.net
 
 ZIO 2 overview  <br/>
 https://zio.dev/next/overview
+https://zio.dev/next/howto/migrate/zio-2.x-migration-guide
 
 ZIO 1.x overview  <br/>
 https://zio.dev/version-1.x/overview/

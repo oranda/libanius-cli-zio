@@ -26,7 +26,7 @@ What method in ZIO would you use to convert a Try value into a ZIO effect?|fromT
 What method in ZIO would you use to convert a Future into a ZIO effect?|fromFuture
 What do you need to pass to fromFuture to allow ZIO to manage where the Future runs?|ExecutionContext
 What method in ZIO would you use to convert a synchronous side-effect (such as StdIn.readLine()) into a ZIO effect?|attempt
-What method in ZIO might you use instead of effect if you know the side-effect being converted throws no exceptions?|succeed
+What method in ZIO might you use instead of attempt if you know the side-effect being converted throws no exceptions?|succeed
 What method in ZIO would you use to refine the error type of an effect (by treating other errors as fatal)?|refineToOrDie
 What method in ZIO would you use to convert an asynchronous side-effect with a callback-based API to a ZIO effect?|async
 What package in ZIO is used to convert blocking side-effects into ZIO effects?|zio.blocking
@@ -85,7 +85,7 @@ What method can be used on a ZIO runtime to synchronously execute effects?|unsaf
 To create a custom Runtime, you need to supply an Environment and a ????????????? ?|RuntimeConfig
 Where are errors logged by the unhandled error reporter for the default RuntimeConfig?|standard error
 What ZIO data type represents an effect that can be performed transactionally resulting in a failure or success?|STM
-What ZIO data type represents a scope in which resources can safely be used? Scope
+What ZIO data type represents a scope in which resources can safely be used?|Scope
 What ZIO data type is a model of a variable that may be set a single time, and awaited on by many fibers?|Promise
 What atomic primitive can be used by different fibers to share information?|Ref
 What ZIO data type models a mutable reference to a value, bound to an executing Fiber only?|FiberRef
@@ -100,3 +100,23 @@ What ZIO data type can be used for a value that increases over time (like reques
 To write a ZIO test, what's the most basic ZIO type you would extend?|ZIOSpecDefault
 What would you add to SBT's testFrameworks setting to ensure ZIO tests are picked up automatically?|ZTestFramework
 What library allows interoperability between ZIO and Cats/Cats Effect?|interop-cats
+What ZIO method would you use to evaluate all effects in an Iterable from left to right and discard the results?|collectAllDiscard
+What ZIO method returns an effect that keeps or breaks a promise based on the result of the current effect?|intoPromise
+What ZIO method runs an effect with a specified maximum number of fibers for parallel operators?|withParallelism
+What ZIO method would you use to invert a left projection?|unleft
+What service allows you to gain access to the command-line arguments of your application?|ZIOAppArgs
+What ZIO method would you use to help create an accessor method for a service?|serviceWithZIO
+What ZLayer method can you use to directly construct a layer?|make
+What layer would you include in your layer construction to get a Mermaid chart for debugging?|ZLayer.Debug.mermaid
+In ZIO 2, what is the main type used for resource management, making ZManaged unnecessary?|Scope
+What ZIO method causes a ZIO effect to be enclosed in a way that eliminates the current Scope?|scoped
+If you want to use ZManaged for backward compatibility, what library do you need to add a dependency?|zio-managed
+What method can you use in ZIO 2 to to assert an expected behavior using ordinary Scala expressions (Smart Assertions)?|assertTrue
+What new abstraction in ZIO 2 unifies ZStream and ZSink?|ZChannel
+What ZIO type accepts a stream as input and return the transformed stream as output?|ZPipeline
+What package are all ZIO services (e.g. Clock, Blocking, Console) now in?|zio
+What function in zio.console can you use to print text to the console (formerly putStr)?|print
+What ZIO data structure can you use to distribute messages to multiple consumers?|Queue
+What ZIO data structure can you use to broadcast messages to multiple consumers?|Hub
+What ZIO type enables us to modify an existing ZIO effect with some additional aspects like logging or retrying?|ZIOAspect
+What is the most basic ZIO function that allows you to log?|log

@@ -39,8 +39,7 @@ object QuizInit {
   def getQuizGroupsFromUser(
     qgHeaders: Seq[QuizGroupHeader]
   ): IO[IOException, Seq[QuizGroupHeader]] = {
-    val chooseQgsText =
-      "\nChoose quiz group(s). For more than one, separate with commas, e.g. 1,2,3\n\n"
+    val chooseQgsText = "\nChoose quiz group\n\n"
     for
       _       <- printLine(chooseQgsText + Text.quizGroupChoices(qgHeaders) + "\n")
       choices <- getQgSelectionFromInput(qgHeaders)

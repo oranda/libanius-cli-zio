@@ -31,7 +31,7 @@ case class UserTextAnswer(text: String) extends UserConsoleResponse
 case object Quit                        extends UserConsoleResponse
 
 object QuizLoop {
-  def loop(quiz: Quiz): ZIO[PersistentData, IOException, Unit] =
+  def loop(quiz: Quiz): ZIO[DataStore.Service, IOException, Unit] =
     for
       _ <- showQuizStatus(quiz)
       _ <- FindQuizItem.run(quiz) match {
@@ -43,7 +43,7 @@ object QuizLoop {
   def runQuizItemAndLoop(
     quiz: Quiz,
     quizItem: QuizItemViewWithChoices
-  ): ZIO[PersistentData, IOException, Unit] =
+  ): ZIO[DataStore.Service, IOException, Unit] =
     for
       response <- askQuestionAndGetResponse(quizItem)
       _ <- response match {
@@ -52,10 +52,10 @@ object QuizLoop {
            }
     yield ()
 
-  def exit(quiz: Quiz): ZIO[PersistentData, IOException, Unit] =
+  def exit(quiz: Quiz): ZIO[DataStore.Service, IOException, Unit] =
     for
       _    <- printLine("Saving quiz state...")
-      data <- ZIO.service[PersistentData]
+      data <- ZIO.service[DataStore.Service]
       _    <- ZIO.blocking(data.saveQuiz(quiz).refineToOrDie[IOException])
     yield ()
 
@@ -75,7 +75,7 @@ object QuizLoop {
     quiz: Quiz,
     answer: String,
     quizItem: QuizItemViewWithChoices
-  ): ZIO[PersistentData, IOException, Unit] =
+  ): ZIO[DataStore.Service, IOException, Unit] =
     for
       updatedQuiz <- processQuizItem(quiz, answer, quizItem)
       _           <- loop(updatedQuiz)
@@ -85,7 +85,7 @@ object QuizLoop {
     quiz: Quiz,
     answer: String,
     quizItem: QuizItemViewWithChoices
-  ): ZIO[PersistentData, IOException, Quiz] =
+  ): IO[IOException, Quiz] =
     if quizItem.useMultipleChoice then processMultipleChoiceItem(quiz, answer, quizItem)
     else processUserAnswer(quiz, answer, quizItem)
 

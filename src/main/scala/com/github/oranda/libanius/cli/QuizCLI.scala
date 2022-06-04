@@ -25,10 +25,9 @@ import zio.Console.*
 import java.io.IOException
 
 object QuizCLI {
-  def runCLI: ZIO[PersistentData, Throwable, Unit] =
+  def runCLI: ZIO[DataStore.Service, Throwable, Unit] =
     for
-      data      <- ZIO.service[PersistentData]
-      qgHeaders <- data.findAvailableQuizGroups
+      qgHeaders <- PersistentData.findAvailableQuizGroups
       quiz      <- if qgHeaders.isEmpty then QuizInit.loadDemoQuiz else QuizInit.loadQuiz(qgHeaders)
       _         <- printLine(Text.quizIntro(quiz)) *> QuizLoop.loop(quiz)
     yield ()

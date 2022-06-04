@@ -29,19 +29,18 @@ object QuizInit {
   val loadDemoQuiz: IO[IOException, Quiz] =
     printLine("No quiz groups found. Defaulting to dummy data.") *> ZIO.succeed(Quiz.demoQuiz())
 
-  def loadQuiz(availableQgHeaders: Seq[QuizGroupHeader]): ZIO[PersistentData, Throwable, Quiz] =
+  // use PersistentData.Service ?
+  def loadQuiz(availableQgHeaders: Seq[QuizGroupHeader]): ZIO[DataStore.Service, Throwable, Quiz] =
     for
       qgHeaders <- getQuizGroupsFromUser(availableQgHeaders)
-      data      <- ZIO.service[PersistentData]
-      quiz      <- data.loadQuizForQgHeaders(qgHeaders)
+      quiz      <- PersistentData.loadQuizForQgHeaders(qgHeaders)
     yield quiz
 
   def getQuizGroupsFromUser(
     qgHeaders: Seq[QuizGroupHeader]
   ): IO[IOException, Seq[QuizGroupHeader]] = {
-    val chooseQgsText = "\nChoose quiz group\n\n"
     for
-      _       <- printLine(chooseQgsText + Text.quizGroupChoices(qgHeaders) + "\n")
+      _       <- printLine(Text.quizGroupChoicesWithPrompt(qgHeaders))
       choices <- getQgSelectionFromInput(qgHeaders)
     yield choices
   }

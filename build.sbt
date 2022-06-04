@@ -1,6 +1,6 @@
 organization := "com.github.oranda"
 name := "libanius-cli-zio"
-version := "0.4.2"
+version := "0.5"
 
 val ZIOVersion = "2.0.0-RC5"
 
@@ -15,7 +15,8 @@ libraryDependencies ++= Seq(
   "com.github.oranda" % "libanius_3" % "0.9.9.2",
   "dev.zio" % "zio_3" % ZIOVersion,
   "dev.zio" % "zio-test_3" % ZIOVersion % "test",
-  "dev.zio" % "zio-test-sbt_3" % ZIOVersion % "test"
+  "dev.zio" % "zio-test-sbt_3" % ZIOVersion % "test",
+  "org.scalatest" %% "scalatest" % "3.2.12"
 )
 
 testFrameworks := Seq(new TestFramework("zio.test.sbt.ZTestFramework"))

@@ -25,7 +25,9 @@ import com.oranda.libanius.model.quizitem.QuizItemViewWithChoices
  * Functions to compose text.
  */
 object Text {
-  def quizIntro(quiz: Quiz) = s"""
+  val chooseQgs = "\nChoose quiz group:\n\n"
+
+  def quizIntro(quiz: Quiz): String = s"""
                                  |Selected quiz groups:
                                  |${quiz.activeQuizGroupHeaders.mkString("\n")}
                                  |
@@ -33,8 +35,11 @@ object Text {
                                  |
                                  |OK, the quiz begins! To quit, type q at any time.|""".stripMargin
 
+  def quizGroupChoicesWithPrompt(choices: Seq[QuizGroupHeader]): String =
+    Text.chooseQgs + Text.quizGroupChoices(choices) + "\n"
+
   def quizGroupChoices(choices: Seq[QuizGroupHeader]): String =
-    choices.zipWithIndex.map { case (header, index) => s"${index + 1}.$header\n"}.mkString("\n")
+    choices.zipWithIndex.map { case (header, index) => s"${index + 1}. $header\n"}.mkString("\n")
 
   def question(quizItem: QuizItemViewWithChoices): String = {
     val wordText           = s": what is the ${quizItem.responseType} for this ${quizItem.promptType}?"
